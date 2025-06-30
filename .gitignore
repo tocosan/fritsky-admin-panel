@@ -1,0 +1,16 @@
+# Dependencias
+node_modules/
+
+# Archivos de configuración local (si los hubiera)
+.env # ¡MUY IMPORTANTE para las credenciales!
+
+# Archivos de Firebase que no deben ir al repo público
+firebase.json # Si contiene credenciales sensibles hardcodeadas, aunque lo ideal es que no.
+.firebaserc
+
+# Archivos de build/salida (si usas algún bundler)
+dist/
+build/
+
+# Archivos de logs o temporales
+*.log

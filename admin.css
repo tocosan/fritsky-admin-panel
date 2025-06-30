@@ -1,0 +1,192 @@
+/* admin.css (Versión Mejorada) */
+
+/* --- Importar Fuentes (si no lo haces ya en el HTML del admin) --- */
+@font-face {
+    font-family: 'CodecPro';
+    src: url('/font/CodecPro-Regular.ttf') format('truetype'); /* Ajusta la ruta si es necesario */
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Pusia';
+    src: url('/font/Pusia-Bold.ttf') format('truetype'); /* Ajusta la ruta */
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* --- Variables (puedes copiar las de tu PWA y ajustar) --- */
+:root {
+    --admin-color-primario: #FFD600;
+    --admin-color-secundario: #000000;
+    --admin-color-texto: #333333;
+    --admin-color-texto-claro: #FFFFFF;
+    --admin-color-fondo-pagina: #f0f2f5; /* Un gris muy claro para el fondo */
+    --admin-color-tarjeta: #FFFFFF;
+    --admin-color-borde-input: #ced4da;
+    --admin-color-error: #dc3545;
+    --admin-color-success: #28a745;
+    --admin-fuente-titulos: 'Pusia', Arial, sans-serif;
+    --admin-fuente-principal: 'CodecPro', Arial, sans-serif;
+}
+
+body {
+    font-family: var(--admin-fuente-principal);
+    margin: 0;
+    background-color: var(--admin-color-fondo-pagina);
+    color: var(--admin-color-texto);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+header h1 {
+    font-family: var(--admin-fuente-titulos);
+    color: var(--admin-color-primario);
+    font-size: 2.5rem;
+    margin: 0;
+    text-shadow: 1px 1px 1px var(--admin-color-secundario);
+}
+
+main {
+    width: 100%;
+    max-width: 500px; /* Ancho máximo para los formularios */
+}
+
+.admin-card {
+    background-color: var(--admin-color-tarjeta);
+    padding: 30px 35px; /* Más padding */
+    border-radius: 12px; /* Bordes más redondeados */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1); /* Sombra más suave y difusa */
+    margin-bottom: 30px;
+    border-top: 5px solid var(--admin-color-primario); /* Acento amarillo arriba */
+}
+
+.admin-card h2 {
+    font-family: var(--admin-fuente-titulos);
+    margin-top: 0;
+    margin-bottom: 25px;
+    text-align: center;
+    color: var(--admin-color-texto);
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold; /* Pusia ya es bold, si usas CodecPro para labels, esto ayuda */
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"] {
+    width: 100%; /* Que ocupe todo el ancho disponible */
+    padding: 12px 15px;
+    border: 1px solid var(--admin-color-borde-input);
+    border-radius: 6px;
+    font-family: var(--admin-fuente-principal);
+    font-size: 1rem;
+    box-sizing: border-box; /* Importante para que el padding no aumente el ancho total */
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--admin-color-primario);
+    box-shadow: 0 0 0 0.2rem rgba(255, 214, 0, 0.25); /* Sombra al enfocar, como Bootstrap */
+}
+
+/* Estilos de Botones (puedes adaptarlos de tu PWA) */
+.button-primary, .button-secondary {
+    font-family: var(--admin-fuente-principal);
+    /* font-weight: bold; (Si CodecPro no es bold por defecto y lo quieres) */
+    width: 100%; /* Botones de formulario a todo el ancho */
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 10px; /* Espacio si hay un mensaje de error arriba */
+}
+.button-primary:hover, .button-secondary:hover {
+    transform: translateY(-2px);
+}
+
+.button-primary {
+    background-color: var(--admin-color-primario);
+    color: var(--admin-color-secundario);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.button-primary:hover {
+    background-color: #e0a800; /* Un amarillo más oscuro */
+}
+
+.button-secondary {
+    background-color: #6c757d; /* Un gris para botones secundarios */
+    color: var(--admin-color-texto-claro);
+}
+.button-secondary:hover {
+    background-color: #5a6268;
+}
+
+
+.error-message, .message {
+    font-family: var(--admin-fuente-principal);
+    font-size: 0.9em;
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    min-height: 1.2em; /* Mantenemos para que el layout no salte mucho */
+    /* Quitamos el background-color de aquí */
+    /* El color del texto se aplicará cuando haya contenido */
+    visibility: hidden; /* Oculto por defecto */
+    opacity: 0;         /* Transparente por defecto */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.error-message.visible, .message.visible { /* Nueva clase 'visible' */
+    visibility: visible;
+    opacity: 1;
+}
+
+.error-message.visible { /* Fondo solo cuando es visible y es error */
+    color: var(--admin-color-texto-claro);
+    background-color: var(--admin-color-error);
+}
+
+.message.visible { /* Fondo solo cuando es visible y es mensaje de éxito */
+    color: var(--admin-color-texto-claro);
+    background-color: var(--admin-color-success);
+}
+
+#adminUserInfo {
+    text-align: right;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+#adminUserInfo strong {
+    font-family: var(--admin-fuente-titulos);
+    color: var(--admin-color-primario);
+}

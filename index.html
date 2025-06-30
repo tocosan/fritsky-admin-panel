@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fritsky - Panel de Admin</title>
+    <link rel="stylesheet" href="admin.css">
+
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
+</head>
+<body>
+    <header>
+        <h1>Panel de Administración - Fritsky Patateria</h1>
+    </header>
+    <main>
+        <!-- Sección de Login para Empleados (Lo primero que necesitamos) -->
+        <section id="adminLoginSection" class="admin-card">
+            <h2>Acceso de Personal</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminEmail">Correo Electrónico (Empleado):</label>
+                    <input type="email" id="adminEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Contraseña:</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="button-primary">Ingresar</button>
+                <p id="adminLoginError" class="error-message"></p>
+            </form>
+        </section>
+
+        <!-- Sección para Sumar Puntos (se mostrará después del login) -->
+        <section id="sumarPuntosSection" class="admin-card" style="display:none;">
+            <h2>Sumar Puntos a Cliente</h2>
+            <div id="adminUserInfo"></div>
+            <form id="sumarPuntosForm">
+                <div class="form-group">
+                    <label for="clienteEmail">Correo Electrónico del Cliente:</label>
+                    <input type="email" id="clienteEmail" required>
+                    <!-- O podrías tener un botón para escanear QR aquí -->
+                </div>
+                <div class="form-group">
+                    <label for="puntosASumar">Puntos a Sumar:</label>
+                    <input type="number" id="puntosASumar" min="1" required>
+                </div>
+                <button type="submit" class="button-primary">Sumar Puntos</button>
+                <p id="sumarPuntosMessage" class="message"></p>
+            </form>
+            <button id="adminLogoutButton" class="button-secondary">Cerrar Sesión Admin</button>
+            <button id="btnMostrarEscanearQR" class="button-secondary">Escanear QR Cliente</button>
+        </section>
+
+        <!-- Sección para Escanear QR (se mostrará después del login) -->
+        <section id="escanearQrSection" class="admin-card" style="display:none;">
+            <h2>Escanear QR del Cliente</h2>
+            <div id="scannerContainer">
+                <!-- Aquí se renderizará el video de la cámara -->
+               <div id="qrScannerElement"></div>
+            </div>
+            <p id="scanMessage" class="message"></p>
+
+            <div id="clienteEncontradoInfo" style="display:none;">
+                <p>Cliente encontrado: <strong id="clienteEscaneadoEmail"></strong></p>
+                <p>Puntos actuales: <span id="clienteEscaneadoPuntos"></span></p>
+                
+                <form id="escanearSumarPuntosForm">
+                    <div class="form-group">
+                        <label for="puntosASumarDesdeQR">Puntos a Sumar:</label>
+                        <input type="number" id="puntosASumarDesdeQR" min="1" required>
+                    </div>
+                    <button type="submit" class="button-primary">Sumar Puntos</button>
+                    <p id="escanearSumarPuntosMessage" class="message"></p>
+                </form>
+            </div>
+
+            <button id="btnVolverAInicio" class="button-secondary">Volver al Inicio</button>
+           
+        </section>
+    </main>
+    <script type="module" src="mainAdmin.js"></script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js') // O './sw.js'
+                .then(reg => console.log('[Admin App] Service worker registrado.', reg))
+                .catch(err => console.error('[Admin App] Error registro SW:', err));
+        });
+    }
+</script>
+</body>
+</html>
