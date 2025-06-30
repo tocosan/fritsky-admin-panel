@@ -1,18 +1,27 @@
-// fritsky-admin-panel/sw.js
-const CACHE_NAME_ADMIN = 'fritsky-admin-panel-cache-v2'; // Nombre de caché diferente
+// sw.js
+const CACHE_NAME_ADMIN = 'fritsky-admin-panel-cache-v3'; // Cambia la versión si haces cambios mayores
 const urlsToCacheAdmin = [
     '/',
     '/index.html',
     '/admin.css',
-    '/mainAdmin.js', // Si es modular, el navegador lo maneja, pero cachear el entry point es bueno
+    '/mainAdmin.js', // Entry point principal
+
+    // --- ¡AÑADIR TODOS LOS MÓDULOS AQUÍ! ---
+    '/modules/authService.js',
+    '/modules/firestoreService.js',
+    '/modules/utils.js',
+    '/modules/qrScannerService.js', // ¡Este es crucial para el escáner!
+    // Si tuvieras más módulos, añádelos también.
+
     '/manifest.json',
-    // Fuentes para el admin panel
+    // Fuentes
     '/font/CodecPro-Regular.ttf',
     '/font/Pusia-Bold.ttf',
-    // Iconos del manifest del admin
+    // Iconos
     '/images/admin-icon-192.png',
     '/images/admin-icon-512.png',
-    // SDKs de Firebase (opcional, pero puede ayudar)
+
+    // SDKs de Firebase (si prefieres cachearlos)
     'https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js',
     'https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js',
     'https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js'
@@ -23,7 +32,7 @@ self.addEventListener('install', event => {
         caches.open(CACHE_NAME_ADMIN)
             .then(cache => {
                 console.log('[Admin SW] Cache abierto:', CACHE_NAME_ADMIN);
-                return cache.addAll(urlsToCacheAdmin);
+                return cache.addAll(urlsToCacheAdmin); // Asegúrate que todos los módulos estén aquí
             })
             .then(() => self.skipWaiting())
             .catch(err => console.error('[Admin SW] Fallo al cachear:', err))
@@ -45,8 +54,7 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    // Estrategia de caché (puedes usar la misma que en la PWA del cliente:
-    // Network first para HTML, Cache first para assets)
+    // Estrategia de caché
     if (event.request.mode === 'navigate') {
         event.respondWith(
             fetch(event.request).catch(() => caches.match(event.request))

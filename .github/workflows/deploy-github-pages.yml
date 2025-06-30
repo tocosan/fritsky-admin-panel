@@ -1,0 +1,74 @@
+# .github/workflows/deploy-github-pages.yml
+
+name: Deploy PWA to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master # O 'main', si esa es tu rama principal
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest # Entorno de ejecución
+    steps:
+      # 1. Checkout del código del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          path: . # Descarga el código en la raíz del job
+          fetch-depth: 0 # Obtiene todo el historial del repositorio, necesario para gh-pages
+
+      # 2. Configurar Node.js
+      - name: Use Node.js 18.x # Especifica la versión de Node.js que necesites
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm' # Habilita el cache para dependencias npm, acelerando builds
+
+      # 3. Instalar dependencias
+      # Esto es importante para instalar gh-pages y cualquier otra dependencia
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Configurar la ruta base para GitHub Pages
+      # Este paso es para asegurar que las rutas relativas funcionen correctamente,
+      # especialmente si tu repositorio no está en la raíz de tu cuenta de GitHub (ej. tu-usuario.github.io/tu-repo/).
+      # Se verifica si "homepage" ya está en package.json; si no, se añade.
+      - name: Set base path for PWA
+        run: |
+          echo "Configuring homepage for GitHub Pages..."
+          # Verifica si el package.json existe y contiene la línea "homepage"
+          if [ -f package.json ]; then
+            # Comprueba si la línea "homepage" ya existe. Si no, la añade.
+            if ! grep -q '"homepage": "/fritsky-admin-panel"' package.json; then
+              # Inserta la línea "homepage" después de la línea que empieza con '"scripts": {'
+              # Esto es una forma simple de modificar package.json. Si tienes una estructura compleja,
+              # considera usar un script de Node.js para editarlo.
+              sed -i '/"scripts": {/a \ \ "homepage": "/fritsky-admin-panel",' package.json
+              echo "Homepage added to package.json."
+            else
+              echo "Homepage already set correctly."
+            fi
+            echo "Content of package.json:"
+            cat package.json # Muestra el contenido para verificación
+          else
+            echo "package.json not found. Skipping homepage configuration."
+          fi
+
+      # 5. Desplegar a GitHub Pages usando la acción 'peaceiris/actions-gh-pages'
+      # Esta acción se encarga de subir los archivos a la rama de despliegue.
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # Utiliza una acción popular y recomendada
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Token predefinido de GitHub Actions
+          publish_dir: . # Indica que se publique el contenido del directorio raíz
+          publish_branch: master # O 'main', según tu rama principal
+
+      # 6. Cachear node_modules para acelerar futuros builds
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
