@@ -5,7 +5,7 @@ name: Deploy PWA to GitHub Pages
 on:
   push:
     branches:
-      - master # O 'main', si esa es tu rama principal
+      - main # O 'main', si esa es tu rama principal
 
 jobs:
   build_and_deploy:
