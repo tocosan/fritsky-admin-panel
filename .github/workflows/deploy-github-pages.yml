@@ -5,7 +5,7 @@ name: Deploy PWA to GitHub Pages
 on:
   push:
     branches:
-      - main # O 'main', si esa es tu rama principal
+      - main 
 
 jobs:
   build_and_deploy:
@@ -62,7 +62,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }} # Token predefinido de GitHub Actions
           publish_dir: . # Indica que se publique el contenido del directorio raíz
-          publish_branch: master # O 'main', según tu rama principal
+          publish_branch: main 
 
       # 6. Cachear node_modules para acelerar futuros builds
       - name: Cache node modules
