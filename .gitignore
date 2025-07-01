@@ -1,0 +1,17 @@
+# Dependencias
+node_modules/
+
+# Archivos de entorno y credenciales
+.env
+
+# Archivos de Firebase
+.firebaserc
+firebase.json
+*.json  # Si hay otros json con datos sensibles
+
+# Archivos de build/salida
+dist/
+build/
+
+# Archivos de log
+*.log

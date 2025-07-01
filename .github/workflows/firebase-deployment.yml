@@ -1,0 +1,61 @@
+# .github/workflows/firebase-deployment.yml
+
+name: Deploy to Firebase Hosting on push
+
+on:
+  push:
+    branches:
+      - master # O 'main', según tu rama principal
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout del código del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Usa la versión más reciente recomendada
+        with:
+          path: . # Checkout en el directorio raíz del job
+
+      # 2. Configurar Node.js
+      - name: Use Node.js 18.x # O la versión de Node.js que uses
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 # O la versión que corresponda a tu proyecto
+          cache: 'npm' # Si usas npm para instalar dependencias
+
+      # 3. Instalar dependencias (si tu PWA tiene alguna que necesite build)
+      # Si solo usas JS nativo sin build tool, este paso puede ser opcional.
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Desplegar a Firebase Hosting
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0-master # O la versión más reciente recomendada
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          # Usa el secreto FIREBASE_SERVICE_ACCOUNT que creaste con el contenido del JSON
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }} 
+          # Usa el token de despliegue que creaste con firebase login:ci
+          firebaseToken: ${{ secrets.FIREBASE_TOKEN }} 
+          projectId: controlcajafritsky
+          # --- PASAMOS LAS CREDENCIALES DE FIREBASE COMO VARIABLES DE ENTORNO ---
+          # Asegúrate de que los nombres aquí coincidan EXACTAMENTE con los secretos en GitHub
+          # y con los nombres que usas en process.env en tu authService.js
+          env: |
+            FRISKY_FIREBASE_API_KEY=${{ secrets.FRISKY_FIREBASE_API_KEY }}
+            FRISKY_FIREBASE_AUTH_DOMAIN=${{ secrets.FRISKY_FIREBASE_AUTH_DOMAIN }}
+            FRISKY_FIREBASE_PROJECT_ID=${{ secrets.FRISKY_FIREBASE_PROJECT_ID }}
+            FRISKY_FIREBASE_STORAGE_BUCKET=${{ secrets.FRISKY_FIREBASE_STORAGE_BUCKET }}
+            FRISKY_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FRISKY_FIREBASE_MESSAGING_SENDER_ID }}
+            FRISKY_FIREBASE_APP_ID=${{ secrets.FRISKY_FIREBASE_APP_ID }}
+          # --- FIN DE LA SECCIÓN ENV ---
+
+      # 5. Cachear node modules (buena práctica para acelerar builds futuras)
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
