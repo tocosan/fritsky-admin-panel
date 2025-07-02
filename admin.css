@@ -1,3 +1,14 @@
+/* --- NORMALIZACIÓN GLOBAL --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 @font-face {
     font-family: 'CodecPro';
     src: url('/font/CodecPro-Regular.ttf') format('truetype');
@@ -41,15 +52,13 @@ body {
     font-family: var(--texto-principal);
     background-color: var(--fondo);
     color: var(--texto);
-    margin: 0;
-    padding: 0;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    width: 100%;
-    overflow-x: hidden;
 }
+
 
 header {
     width: 100%;
@@ -212,52 +221,52 @@ main {
     background-color: #0056b3;
 }
 
-/* Contenedor para el escáner QR */
+/* --- Secciones específicas corregidas --- */
 #qrScannerElement {
-    width: 100%;
-    height: 280px; /* Altura fija para el escáner */
-    border-radius: var(--admin-border-radius);
-    margin-bottom: 15px;
-    background-color: var(--admin-color-fondo-pagina); /* Fondo mientras carga */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* Para que el video no se salga de los bordes redondeados */
+  width: 100%;
+  height: 280px;
+  border-radius: var(--radio);
+  margin-bottom: 15px;
+  background-color: var(--fondo);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
-#qrScannerElement canvas { /* Estilos para el canvas del escáner */
-    border-radius: var(--admin-border-radius);
+#qrScannerElement canvas {
+  border-radius: var(--radio);
 }
 
 /* Información del cliente escaneado */
 .cliente-info-escaneado {
-    background-color: var(--admin-color-accent-light); /* Azul muy claro */
-    border: 1px solid var(--admin-color-accent-border); /* Borde azulado sutil */
-    padding: 15px 20px;
-    margin-top: 15px;
-    border-radius: var(--admin-border-radius);
-    box-shadow: var(--admin-shadow-light);
-    text-align: center;
-    margin-bottom: 15px;
-    display: none; /* Oculto por defecto */
+  background-color: var(--azul-claro);
+  border: 1px solid var(--azul-borde);
+  padding: 15px 20px;
+  margin-top: 15px;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-suave);
+  text-align: center;
+  margin-bottom: 15px;
+  display: none;
 }
 .cliente-info-escaneado p {
-    margin-bottom: 10px;
-    font-size: 1rem; /* Tamaño de fuente para info de cliente */
-    color: var(--admin-color-secundario);
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: var(--negro);
 }
 .cliente-info-escaneado p i { /* Si usas Font Awesome */
     margin-right: 8px;
-    color: var(--admin-color-primario); /* Íconos en color primario */
+    color: var(--negro); /* Íconos en color primario */
     font-size: 1.1em;
     vertical-align: middle; /* Alinea íconos con el texto */
 }
 .cliente-info-escaneado #clienteEscaneadoEmail {
     font-weight: bold;
-    color: var(--admin-color-secundario); /* Email en negro */
+    color: var(--negro); /* Email en negro */
 }
 .cliente-info-escaneado #clienteEscaneadoPuntos {
     font-weight: bold;
-    color: var(--admin-color-primario); /* Puntos en amarillo */
+    color: var(--primario); /* Puntos en amarillo */
 }
 
 /* Formulario de sumar puntos adjunto a la info del cliente escaneado */
@@ -432,22 +441,21 @@ main {
 
 
 /* --- RESPONSIVE --- */
-
 @media (min-width: 768px) {
-    header h1 { font-size: 2.8rem; }
-    .admin-card { padding: 35px 40px; }
-    .button-primary, .button-secondary { font-size: 1rem; }
-    #qrScannerElement { height: 320px; }
+  header h1 { font-size: 2.8rem; }
+  .admin-card { padding: 35px 40px; }
+  .button-primary, .button-secondary { font-size: 1rem; }
+  #qrScannerElement { height: 320px; }
 }
 
 @media (max-width: 767.98px) {
-    header h1 { font-size: 1.8rem; }
-    .admin-card { padding: 20px 15px; }
-    .form-group input { padding: 8px 10px; font-size: 0.95rem; }
-    .button-primary, .button-secondary {
-        font-size: 0.8rem;
-        line-height: 1.2;
-    }
-    #qrScannerElement { height: 240px; }
-    #clientesTable th, #clientesTable td { padding: 8px 10px; font-size: 0.85rem; }
+  header h1 { font-size: 1.8rem; }
+  .admin-card { padding: 20px 15px; }
+  .form-group input { padding: 8px 10px; font-size: 0.95rem; }
+  .button-primary, .button-secondary {
+    font-size: 0.8rem;
+    line-height: 1.2;
+  }
+  #qrScannerElement { height: 240px; }
+  #clientesTable th, #clientesTable td { padding: 8px 10px; font-size: 0.85rem; }
 }
