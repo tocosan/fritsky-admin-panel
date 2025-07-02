@@ -48,12 +48,15 @@
                 <button type="submit" class="button-primary">Sumar Puntos</button>
                 <p id="sumarPuntosMessage" class="message"></p>
             </form>
-            <button id="adminLogoutButton" class="button-secondary">Cerrar Sesión Admin</button>
-            <button id="btnMostrarEscanearQR" class="button-secondary">Escanear QR Cliente</button>
+            <div class="buttons-container">
+                <button id="adminLogoutButton" class="button-secondary">Cerrar Sesión Admin</button>
+                <button id="btnMostrarEscanearQR" class="button-secondary">Escanear QR Cliente</button>
+                <button id="btnMostrarClientes" class="button-secondary">Ver Clientes</button>
+            </div>
         </section>
 
         <!-- Sección para Escanear QR (se mostrará después del login) -->
-        <section id="escanearQrSection" class="admin-card" style="display:none;">
+        <section id="escanearQrSection" class="admin-card" >
             <h2>Escanear QR del Cliente</h2>
             <div id="scannerContainer">
                 <!-- Aquí se renderizará el video de la cámara -->
@@ -61,7 +64,7 @@
             </div>
             <p id="scanMessage" class="message"></p>
 
-            <div id="clienteEncontradoInfo" style="display:none;">
+            <div id="clienteEncontradoInfo" >
                 <p>Cliente encontrado: <strong id="clienteEscaneadoEmail"></strong></p>
                 <p>Puntos actuales: <span id="clienteEscaneadoPuntos"></span></p>
                 
@@ -78,6 +81,57 @@
             <button id="btnVolverAInicio" class="button-secondary">Volver al Inicio</button>
            
         </section>
+        <!-- Nueva Sección para Listado y Detalle de Clientes -->
+        <section id="clientesSection" class="admin-card">
+            <h2>Gestión de Clientes</h2>
+            
+            <!-- Botón para volver a la sección principal -->
+            <button id="btnVolverDesdeClientes" class="button-secondary">Volver al Inicio</button>
+
+            <!-- Contenedor para el listado de clientes -->
+            <div id="clientesListContainer" class="list-container">
+                <h3>Listado de Clientes</h3>
+                <table id="clientesTable">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Puntos</th>
+                            <th>Fecha de Registro</th>
+                            <!-- Añade más columnas si es necesario -->
+                        </tr>
+                    </thead>
+                    <tbody id="clientesTableBody">
+                        <!-- Aquí se cargarán las filas de clientes -->
+                        <tr>
+                            <td colspan="3">Cargando clientes...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p id="clientesMessage" class="message"></p>
+            </div>
+
+            <!-- Área para el detalle de un cliente (inicialmente oculta) -->
+            <div id="clienteDetailContainer" class="clienteDetail">
+                <h3>Detalle del Cliente</h3>
+                <p><strong>Email:</strong> <span id="clienteDetailEmail"></span></p>
+                <p><strong>Puntos:</strong> <span id="clienteDetailPuntos"></span></p>
+                <p><strong>Fecha de Registro:</strong> <span id="clienteDetailFechaRegistro"></span></p>
+                
+                <hr> <!-- Separador visual -->
+                
+                <h4>Sumar Puntos Manualmente</h4>
+                <form id="detalleSumarPuntosForm"> <!-- <-- ESTE ES EL FORMULARIO NUEVO -->
+                    <div class="form-group">
+                        <label for="puntosASumarEnDetalle">Puntos a Sumar:</label>
+                        <input type="number" id="puntosASumarEnDetalle" min="1" required>
+                    </div>
+                    <button type="submit" class="button-primary">Sumar Puntos</button>
+                    <p id="detalleSumarPuntosMessage" class="message"></p> <!-- Para mensajes de éxito/error de esta suma -->
+                </form>
+                <button id="btnCerrarClienteDetail" class="detalle">Cerrar Detalle</button>
+            </div> 
+        </section>
+
     </main>
     <script type="module" src="mainAdmin.js"></script>
     <script>

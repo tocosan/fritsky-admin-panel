@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME_ADMIN = 'fritsky-admin-panel-cache-v3'; // Cambia la versión si haces cambios mayores
+const CACHE_NAME_ADMIN = 'fritsky-admin-panel-cache-v5'; // Cambia la versión si haces cambios mayores
 const urlsToCacheAdmin = [
     '/',
     '/index.html',
@@ -17,10 +17,7 @@ const urlsToCacheAdmin = [
     // Fuentes
     '/font/CodecPro-Regular.ttf',
     '/font/Pusia-Bold.ttf',
-    // Iconos
-    '/images/admin-icon-192.png',
-    '/images/admin-icon-512.png',
-
+    
     // SDKs de Firebase (si prefieres cachearlos)
     'https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js',
     'https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js',
@@ -66,4 +63,17 @@ self.addEventListener('fetch', event => {
             })
         );
     }
+});
+
+self.addEventListener('push', event => {
+    // Si no vas a implementar notificaciones push, puedes dejarlo vacío o solo registrar un mensaje.
+    console.log('[Admin SW] Push event recibido (manejado vacío)');
+    // Si tuvieras un evento push y quisieras mostrar una notificación:
+    // const promiseChain = clients.matchAll()
+    //   .then(windowClients => {
+    //     for (const client of windowClients) {
+    //       client.postMessage({ message: 'push', payload: event.data.text() });
+    //     }
+    //   });
+    // event.waitUntil(promiseChain);
 });
