@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME_ADMIN = 'fritsky-admin-panel-cache-v6'; // Cambia la versión si haces cambios mayores
+const CACHE_NAME_ADMIN = 'fritsky-admin-panel-cache-v9'; // Cambia la versión si haces cambios mayores
 const urlsToCacheAdmin = [
     '/',
     '/index.html',

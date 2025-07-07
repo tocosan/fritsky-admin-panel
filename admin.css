@@ -98,9 +98,7 @@ main {
 
 
 /* --- FORMULARIOS --- */
-.form-group {
-    margin-bottom: 18px;
-}
+
 .form-group label {
     display: block;
     font-weight: bold;
@@ -185,7 +183,7 @@ main {
     text-align: right;
     font-size: 0.85rem;
     color: #555;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 #adminUserInfo strong {
     font-family: var(--titulos);
@@ -199,6 +197,17 @@ main {
 }
 
 /* --- Sección Sumar Puntos (Manual) --- */
+#adminLoginSection #adminLoginForm input,
+#sumarPuntosSection #sumarPuntosForm input {
+    margin-bottom: 25px;
+}
+
+#adminLoginSection #adminLoginForm .btn-ingreso{
+    display: block;
+    margin: 0 auto;
+    width: 50%;
+}
+
 #sumarPuntosForm .button-primary{
     display: block;
     margin: 0 auto;
@@ -208,81 +217,6 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-/* --- Sección Escanear QR --- */
-#escanearQrSection .admin-card {
-    border-top: 5px solid #007bff; /* Acento azul para esta sección */
-}
-#escanearQrSection .button-primary { /* Botón específico para esta sección */
-    background-color: #007bff;
-}
-#escanearQrSection .button-primary:hover {
-    background-color: #0056b3;
-}
-
-/* --- Secciones específicas corregidas --- */
-#qrScannerElement {
-  width: 100%;
-  height: 280px;
-  border-radius: var(--radio);
-  margin-bottom: 15px;
-  background-color: var(--fondo);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-#qrScannerElement canvas {
-  border-radius: var(--radio);
-}
-
-/* Información del cliente escaneado */
-.cliente-info-escaneado {
-  background-color: var(--azul-claro);
-  border: 1px solid var(--azul-borde);
-  padding: 15px 20px;
-  margin-top: 15px;
-  border-radius: var(--radio);
-  box-shadow: var(--sombra-suave);
-  text-align: center;
-  margin-bottom: 15px;
-  display: none;
-}
-.cliente-info-escaneado p {
-  margin-bottom: 10px;
-  font-size: 1rem;
-  color: var(--negro);
-}
-.cliente-info-escaneado p i { /* Si usas Font Awesome */
-    margin-right: 8px;
-    color: var(--negro); /* Íconos en color primario */
-    font-size: 1.1em;
-    vertical-align: middle; /* Alinea íconos con el texto */
-}
-.cliente-info-escaneado #clienteEscaneadoEmail {
-    font-weight: bold;
-    color: var(--negro); /* Email en negro */
-}
-.cliente-info-escaneado #clienteEscaneadoPuntos {
-    font-weight: bold;
-    color: var(--primario); /* Puntos en amarillo */
-}
-
-/* Formulario de sumar puntos adjunto a la info del cliente escaneado */
-.cliente-info-escaneado .form-group {
-    margin-top: 15px;
-    margin-bottom: 0; /* Eliminar margen inferior del form-group */
-}
-.cliente-info-escaneado .form-group input[type="number"] {
-    padding: 8px 10px; /* Input más pequeño aquí */
-    font-size: 0.95rem;
-}
-.cliente-info-escaneado .button-primary { /* Botón para sumar puntos desde QR */
-    margin-top: 10px;
-    width: auto; /* Que el botón no ocupe todo el ancho */
-    padding: 8px 20px;
-    font-size: 0.9rem;
 }
 
 /* --- SECCION GESTION CLIENTES --- */
@@ -357,25 +291,7 @@ main {
     background-color: #d3d9df; 
 }
 
-/* DETALLE CLIENTE */
-.clienteDetail {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: var(--radio);
-    box-shadow: var(--sombra-media);
-    border-top: 5px solid var(--primario);
-    border-left: 1px solid var(--azul-borde);
-    border-right: 1px solid var(--azul-borde);
-}
-
-#clientesSection .button-secondary {
-    width: 30%;
-    margin-left: 30px;
-}
-
 /* --- SECCION DETALLE CLIENTES --- */
-
-
 .clienteDetail {
     background-color: #fff;
     padding: 20px;
@@ -396,35 +312,35 @@ main {
     font-size: 1.2rem;
 }
 
-
-
-/* Formulario de sumar puntos dentro del detalle */
-#detalleSumarPuntosForm .form-group {
-    margin-bottom: 15px;
+#detalleSumarPuntosForm {
+    margin: 30px 0;
 }
 
+#detalleRestarPuntosForm .form-group input,
 #detalleSumarPuntosForm .form-group input {
-    width: 40%;
+    width: 30%;
 }
+
+#detalleRestarPuntosForm {
+    margin-bottom: 30px;
+}
+
 #detalleSumarPuntosForm .button-primary {
     width: auto;
-    margin-top: 15px;
+    background-color: #28a745;
 }
 
-#detalleSumarPuntosForm .button-secondary {
-    display: block;
-    margin: 0 auto;
-}
-
-.clienteDetail .detalle {
+.clienteDetail .btn-detalle {
     font-family: var(--texto-principal);
-    background-color: var(--verde);
-    width: 35%;
+    background-color: #6c757d;
+    color: var(--blanco) !important;
+    display: block !important;
+    margin: 0 auto;
     padding: 10px 15px; /* Padding ajustado */
     border: none;
     border-radius: var(--radio-boton);
     cursor: pointer;
-    font-size: 0.95rem; /* Tamaño de fuente de botón ajustado */
+    font-size: 0.85rem; /* Tamaño de fuente de botón ajustado */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -439,23 +355,289 @@ main {
     box-shadow: var(--sombra-suave);
 }
 
-
-/* --- RESPONSIVE --- */
-@media (min-width: 768px) {
-  header h1 { font-size: 2.8rem; }
-  .admin-card { padding: 35px 40px; }
-  .button-primary, .button-secondary { font-size: 1rem; }
-  #qrScannerElement { height: 320px; }
+/* --- SECCIÓN ENVÍO DE MENSAJES --- */
+#mensajesSection .admin-card {
+    /* Estilos específicos para la tarjeta de mensajes si son necesarios */
+    border-top: 5px solid #ffc107; /* Un color diferente para destacar, o el mismo primario */
 }
 
+#mensajesSection h3 {
+    font-family: var(--titulos);
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--negro);
+    font-size: 1.2rem;
+}
+
+/* Estilos para los select y textarea dentro de esta sección */
+#mensajesSection select,
+#mensajesSection textarea {
+    width: 100%; /* Asegura que ocupen todo el ancho disponible */
+    padding: 10px 12px;
+    border: 1px solid var(--borde-input);
+    border-radius: var(--radio-boton);
+    font-family: var(--texto-principal);
+    font-size: 1rem;
+    box-sizing: border-box; /* Importante para que el padding no afecte el width */
+}
+
+#mensajesSection textarea {
+    resize: vertical; /* Permite al usuario redimensionar el textarea verticalmente */
+    min-height: 100px; /* Altura mínima para el textarea */
+}
+
+#mensajesSection textarea:focus {
+    outline: none;
+    border-color: var(--primario);
+    box-shadow: 0 0 0 0.2rem rgba(255, 214, 0, 0.25);
+}
+
+/* Estilos para el botón de enviar mensaje en esta sección */
+#crearMensajeForm .button-primary {
+    width: 60% !important; /* O un ancho específico que se vea bien */
+    margin-top: 15px; /* Espacio encima del botón */
+}
+
+/* Estilos para el contenedor general del formulario para centrarlo */
+.message-creation-container {
+    margin-top: 20px;
+}
+.message-creation-container h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+/* Para centrar el formulario si el container es más ancho */
+#crearMensajeForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos del flex */
+}
+
+/* Asegurarse que los botones de acción (Enviar Mensaje, Volver) se vean bien en móvil */
+#mensajesSection .buttons-container, 
+.cliente-info-escaneado .buttons-container,
+#clientesSection .buttons-container {
+    display: flex;
+    flex-direction: column; /* Apilar botones en vertical */
+    align-items: center; /* Centrar botones */
+    width: 100%; /* Ocupar todo el ancho */
+}
+
+#mensajesSection .button-secondary {
+    width: 60% !important; /* Ancho más moderado */
+    margin-top: 10px; /* Espacio entre botones */
+    
+}
+
+
+/* SECCION ESCANER QR */
+
+#escanearQrSection {
+    display: flex; /* Usamos flexbox para organizar el contenido */
+    flex-direction: column; /* Los elementos se apilan verticalmente */
+    align-items: center; /* Centra el contenido horizontalmente */
+    text-align: center; /* Centra el texto si es necesario */
+    margin: 0 25px;
+    padding: 25px 15px; /* Padding un poco menor en móvil */
+      
+}
+
+#escanearQrSection h2 {
+    width: 100%; /* Asegura que el título ocupe el ancho para centrarlo bien */
+    margin-bottom: 20px;
+}
+
+/* Contenedor del scanner y botones de control */
+#scannerContainer {
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* El elemento donde se renderiza el escáner */
+#qrScannerElement {
+    width: 100%; /* Ocupa todo el ancho del #scannerContainer */
+    max-width: 100%; /* Asegura que no exceda su contenedor */
+    height: 280px; /* Altura base, se ajustará con media queries */
+    border-radius: var(--radio);
+    margin-bottom: 15px;
+    background-color: var(--fondo); /* Color de fondo para cuando no está activo */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Importante para que los elementos internos no se salgan */
+}
+
+#qrScannerElement canvas {
+    border-radius: var(--radio);
+    max-width: 100%; /* Asegura que el canvas no exceda el ancho del qrScannerElement */
+    height: auto !important; /* Permite que el canvas mantenga su ratio de aspecto */
+}
+
+#qrScannerElement video {
+    max-width: 100%; /* Asegura que el video no exceda el ancho del #qrScannerElement */
+    height: auto !important; /* Permite que el video mantenga su ratio de aspecto */
+    display: block; /* Elimina el espacio extra debajo del video */
+    border-radius: var(--radio); /* Para que el video también respete el border-radius si es necesario */
+}
+
+/* Botón Stop Scanning */
+#qrScannerElement button[id*="stopScan"] { /* Selecciona botones con 'stopScan' en su ID */
+    position: absolute; /* Posicionarlo para que no afecte el layout del canvas */
+    top: 10px;
+    right: 10px;
+    z-index: 10; /* Asegura que esté por encima del canvas */
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+#qrScannerElement button[id*="stopScan"]:hover {
+    background-color: rgba(255,255,255,1);
+}
+
+/* Información del cliente encontrada */
+#clienteEncontradoInfo { /* Esta es la div que contiene email y puntos */
+    display: flex;
+    flex-direction: column; /* Apila elementos verticalmente */
+    align-items: center; /* Centra horizontalmente */
+    background-color: var(--azul-claro);
+    border: 1px solid var(--azul-borde);
+    padding: 15px 20px;
+    margin-top: 15px;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-suave);
+    width: 100%; /* Ocupa todo el ancho del contenedor padre */
+    
+    box-sizing: border-box; /* Asegura padding y border no añadan al width */
+}
+#clienteEncontradoInfo p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: var(--negro);
+    width: 100%; /* Asegura que el texto del párrafo ocupe el ancho para centrar */
+}
+#clienteEscaneadoEmail,
+#clienteEscaneadoPuntos {
+    font-weight: bold;
+    color: var(--negro);
+}
+#clienteEscaneadoPuntos {
+    color: var(--primario);
+    font-style: italic;
+}
+
+/* Contenedores de los formularios de Sumar/Descontar puntos */
+#sumarPuntosFormContainer,
+#descontarPuntosFormContainer {
+    width: 100%;
+    max-width: 450px; /* Mantiene consistencia con los contenedores superiores */
+    margin-top: 15px;
+    display: none; /* Oculto por defecto, se muestra por JS */
+}
+
+#escanearQrSection .buttons-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center !important;
+}
+
+
+#escanearQrSection .buttons-container .button-secondary { /* Asegúrate de que este selector apunte al botón correcto */
+    width: 60% !important; /* Que ocupe el ancho disponible */
+    max-width: 450px; /* Mantiene consistencia */
+    
+}
+
+#sumarPuntosFormContainer .btnSum-confirm,
+#escanearQrSection .buttons-container .sum {
+    background-color: #28a745 !important;
+    color: var(--negro);
+    
+}
+
+#descontarPuntosFormContainer .btnRest-confirm,
+#escanearQrSection .rest {
+    background-color: var(--primario);
+    color: var(--negro);
+    margin-bottom: 10px;
+}
+
+#sumarPuntosFormContainer .btnSum-confirm,
+#descontarPuntosFormContainer .btnRest-confirm {
+    width: 60%;
+}
+
+/* --- RESPONSIVE --- */
+
 @media (max-width: 767.98px) {
-  header h1 { font-size: 1.8rem; }
-  .admin-card { padding: 20px 15px; }
-  .form-group input { padding: 8px 10px; font-size: 0.95rem; }
+  header h1 { 
+    font-size: 1.8rem; 
+  }
+
+  .admin-card {
+    padding: 20px 15px; 
+  }
+
+  .form-group input { 
+    padding: 8px 10px; 
+    font-size: 0.95rem; 
+  }
+
   .button-primary, .button-secondary {
     font-size: 0.8rem;
     line-height: 1.2;
   }
-  #qrScannerElement { height: 240px; }
-  #clientesTable th, #clientesTable td { padding: 8px 10px; font-size: 0.85rem; }
+
+  #mensajesSection .button-secondary {
+    width: 95%; /* Un poco más anchos en móviles */
+  }
+  #crearMensajeForm .button-primary {
+    width: 95%; /* Botón principal también más ancho */
+  }
+  #mensajesSection textarea {
+    min-height: 120px; /* Más espacio para escribir en móviles */
+  }
+
+
+  #escanearQrSection {
+        padding: 15px 10px; /* Reducir padding en móvil */
+        margin: 10px;
+    }
+
+    #scannerContainer,
+    #clienteEncontradoInfo,
+    #sumarPuntosFormContainer,
+    #descontarPuntosFormContainer {
+        max-width: 100%; /* Permite que ocupen todo el ancho disponible */
+    }
+    #qrScannerElement {
+        height: 350px; /* Altura reducida para el escáner */
+    }
+
+     
+    .cliente-info-escaneado {
+        padding: 10px 15px;
+    }
+    .cliente-info-escaneado p {
+        font-size: 0.9rem;
+    }
+    .cliente-info-escaneado #clienteEscaneadoEmail,
+    .cliente-info-escaneado #clienteEscaneadoPuntos {
+        display: block; /* Para que el email y puntos ocupen su propia línea */
+        margin-top: 5px;
+    }
+
+    .clienteDetail .button-restar {
+    
+    width:50%;
+}
+    
+    #clientesTable th, #clientesTable td { padding: 8px 10px; font-size: 0.85rem; }
 }

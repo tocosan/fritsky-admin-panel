@@ -1,54 +1,64 @@
-// modules/qrScannerService.js
-// Asegúrate de tener la librería Html5QrcodeScanner disponible globalmente o impórtala si usas un bundler.
-// Si la cargas con un <script> en index.html, estará disponible globalmente.
+// qrScannerService.js
+
 import { mostrarMensaje } from './utils.js'; // Importamos la función de utilidad
-// --- Variables del Módulo ---
-let html5QrCodeScanner = null; // Instancia global del escáner
-let scanMessageEl; // Referencia al elemento para mostrar mensajes del escáner
+
+// --- Variables GLOBALES del Módulo ---
+let html5QrCodeScanner = null;
+let scanMessageEl;
+let qrScannerElement;
 let clienteEncontradoInfoDiv;
 let clienteEscaneadoEmailEl;
 let clienteEscaneadoPuntosEl;
-let puntosASumarDesdeQRInput; // Referencia al input para sumar puntos desde QR (obtenida vía setScannerDOMReferences)
-let qrScannerElement; // Referencia al div donde se renderiza el escáner
+let puntosASumarDesdeQRInput;
+let escanearSumarPuntosForm;
+let escanearDescontarPuntosForm;
+let escanearSumarPuntosMessage;
+let escanearDescontarPuntosMessage;
+let puntosADescontarDesdeQRInput;
+let sumarPuntosFormContainer; // Contenedor para el formulario de sumar puntos
+let descontarPuntosFormContainer; // Contenedor para el formulario de descontar puntos
 
-// Variable para almacenar temporalmente la información del cliente escaneado
-window.clienteEscaneadoParaSuma = null;
+window.clienteEscaneadoParaSuma = null; // Variable global para el cliente escaneado
 
 // Temporizador para el auto-ocultamiento de mensajes
 let autoHideMessageTimer = null;
 
 /**
  * Configura las referencias al DOM necesarias para el módulo del escáner.
- * DEBE llamarse después de que el DOM esté cargado y solo una vez.
  * @param {object} refs - Un objeto con las referencias del DOM.
- * @param {HTMLElement} refs.scanMessageEl - Elemento para mensajes de escaneo.
- * @param {HTMLElement} refs.qrScannerElement - Div donde se renderiza el escáner.
- * @param {HTMLElement} refs.clienteEncontradoInfoDiv - Div con info del cliente escaneado.
- * @param {HTMLElement} refs.clienteEscaneadoEmailEl - Elemento para mostrar email del cliente.
- * @param {HTMLElement} refs.clienteEscaneadoPuntosEl - Elemento para mostrar puntos del cliente.
- * @param {HTMLElement} refs.puntosASumarDesdeQRInput - Input para sumar puntos desde QR.
  */
 export function setScannerDOMReferences({
-    scanMessageEl: msgEl,
-    qrScannerElement: qrEl,
-    clienteEncontradoInfoDiv: infoDiv,
-    clienteEscaneadoEmailEl: emailEl,
-    puntosASumarDesdeQRInput: puntosInput,
-    clienteEscaneadoPuntosEl: puntosEl
+    scanMessageEl: refScanMessageEl,
+    qrScannerElement: refQrScannerElement,
+    clienteEncontradoInfoDiv: refClienteEncontradoInfoDiv,
+    clienteEscaneadoEmailEl: refClienteEscaneadoEmailEl,
+    clienteEscaneadoPuntosEl: refClienteEscaneadoPuntosEl,
+    puntosASumarDesdeQRInput: refPuntosASumarDesdeQRInput,
+    escanearSumarPuntosForm: refEscanearSumarPuntosForm,
+    escanearDescontarPuntosForm: refEscanearDescontarPuntosForm,
+    escanearSumarPuntosMessage: refEscanearSumarPuntosMessage,
+    escanearDescontarPuntosMessage: refEscanearDescontarPuntosMessage,
+    puntosADescontarDesdeQRInput: refPuntosADescontarDesdeQRInput,
+    sumarPuntosFormContainer: refSumarPuntosFormContainer,
+    descontarPuntosFormContainer: refDescontarPuntosFormContainer
 }) {
-    // Asignamos las referencias DOM a las variables locales del módulo.
-    scanMessageEl = msgEl;
-    qrScannerElement = qrEl;
-    clienteEncontradoInfoDiv = infoDiv;
-    clienteEscaneadoEmailEl = emailEl;
-    clienteEscaneadoPuntosEl = puntosEl;
-    puntosASumarDesdeQRInput = puntosInput;
-    
+    // Asignamos a las variables GLOBALES del módulo
+    scanMessageEl = refScanMessageEl;
+    qrScannerElement = refQrScannerElement;
+    clienteEncontradoInfoDiv = refClienteEncontradoInfoDiv;
+    clienteEscaneadoEmailEl = refClienteEscaneadoEmailEl;
+    clienteEscaneadoPuntosEl = refClienteEscaneadoPuntosEl;
+    puntosASumarDesdeQRInput = refPuntosASumarDesdeQRInput;
+    escanearSumarPuntosForm = refEscanearSumarPuntosForm;
+    escanearDescontarPuntosForm = refEscanearDescontarPuntosForm;
+    escanearSumarPuntosMessage = refEscanearSumarPuntosMessage;
+    escanearDescontarPuntosMessage = refEscanearDescontarPuntosMessage;
+    puntosADescontarDesdeQRInput = refPuntosADescontarDesdeQRInput;
+    sumarPuntosFormContainer = refSumarPuntosFormContainer;
+    descontarPuntosFormContainer = refDescontarPuntosFormContainer;
 
-    // --- Verificación crítica de que las referencias se obtuvieron ---
-    if (!scanMessageEl || !qrScannerElement || !clienteEncontradoInfoDiv || !clienteEscaneadoEmailEl || !clienteEscaneadoPuntosEl || !puntosASumarDesdeQRInput) {
-        console.error("[SCANNER_SERVICE] ERROR CRÍTICO: No se pudieron asignar todas las referencias DOM necesarias en setScannerDOMReferences.");
-        // Si esto falla, el escaneo no podrá actualizar la UI.
+    if (!scanMessageEl || !qrScannerElement || !clienteEncontradoInfoDiv || !clienteEscaneadoEmailEl || !clienteEscaneadoPuntosEl || !puntosASumarDesdeQRInput || !escanearSumarPuntosForm || !escanearDescontarPuntosForm || !escanearSumarPuntosMessage || !escanearDescontarPuntosMessage || !puntosADescontarDesdeQRInput || !sumarPuntosFormContainer || !descontarPuntosFormContainer) {
+        console.error("[SCANNER_SERVICE] ERROR CRÍTICO: No se pudieron asignar todas las referencias DOM necesarias en setScannerDOMReferences. Revise los IDs en index.html (incluyendo referencias de formularios y contenedores).");
     } else {
         console.log("[SCANNER_SERVICE] Referencias DOM del escáner asignadas correctamente.");
     }
@@ -56,31 +66,21 @@ export function setScannerDOMReferences({
 
 /**
  * Configura y muestra un mensaje, programando su auto-ocultamiento.
- * @param {HTMLElement} element - El elemento donde mostrar el mensaje.
- * @param {string} message - El mensaje a mostrar.
- * @param {boolean} isError - Si el mensaje es de error (para estilos).
- * @param {number} [duration=3000] - Duración en milisegundos antes de ocultar.
  */
 function mostrarMensajeConAutoOcultamiento(element, message, isError, duration = 3000) {
     if (!element) {
         console.error("Elemento de mensaje no disponible para mostrar:", message);
         return;
     }
-    // Limpiar cualquier temporizador anterior para evitar ocultamientos múltiples
     if (autoHideMessageTimer) {
         clearTimeout(autoHideMessageTimer);
     }
-
-    // Mostrar el mensaje
-    mostrarMensaje(element, message, isError); // Usamos la función importada
-
-    // Programar el ocultamiento
+    mostrarMensaje(element, message, isError);
     autoHideMessageTimer = setTimeout(() => {
-        mostrarMensaje(element, "", false); // Limpia el mensaje
-        autoHideMessageTimer = null; // Limpiar la referencia al temporizador
+        mostrarMensaje(element, "", false);
+        autoHideMessageTimer = null;
     }, duration);
 }
-
 
 /**
  * Inicializa el escáner QR, deteniendo uno previo si existe.
@@ -88,7 +88,6 @@ function mostrarMensajeConAutoOcultamiento(element, message, isError, duration =
  * @param {function} onScanFailure - Callback para errores de escaneo.
  */
 export function initializeScanner(onScanSuccess, onScanFailure) {
-    // Detenemos y limpiamos cualquier escáner anterior antes de inicializar uno nuevo
     if (html5QrCodeScanner) {
         html5QrCodeScanner.stop().then(() => {
             console.log("[SCANNER_SERVICE] Escáner QR existente detenido.");
@@ -99,44 +98,39 @@ export function initializeScanner(onScanSuccess, onScanFailure) {
         html5QrCodeScanner = null;
     }
     console.log("[SCANNER_SERVICE] Intentando inicializar escáner...");
-    // Usamos un pequeño timeout para asegurar que el DOM esté completamente listo y la sección sea visible.
+    
     setTimeout(() => {
         if (!qrScannerElement) {
             console.error("[SCANNER_SERVICE] Elemento #qrScannerElement no está configurado.");
-            mostrarMensaje(scanMessageEl, "Error: Contenedor del escáner no configurado.", true);
+            if (scanMessageEl) mostrarMensaje(scanMessageEl, "Error: Contenedor del escáner no configurado.", true);
             return;
         }
 
         try {
-            // Crear una nueva instancia del escáner
             html5QrCodeScanner = new Html5QrcodeScanner(qrScannerElement.id, {
                 fps: 10,
                 qrbox: { width: 250, height: 250 }
             });
 
-            // Renderizar el escáner. Los handlers los definimos aquí pero los pasamos como callbacks.
             html5QrCodeScanner.render(
                 (decodedText, decodedResult) => {
-                    // Procesamos el texto decodificado
                     if (decodedText && typeof decodedText === 'string' && decodedText.startsWith("fritsky_user:")) {
                         const parts = decodedText.split(':');
                         if (parts.length === 2) {
                             const clienteUid = parts[1];
                             console.log(`[SCANNER_SERVICE] UID del cliente extraído: ${clienteUid}`);
-                            stopScanner(); // Detenemos el escáner una vez que tenemos el UID.
-                            onScanSuccess(clienteUid); // Llamamos al callback de éxito.
+                            stopScanner();
+                            onScanSuccess(clienteUid);
                         } else {
-                            mostrarMensaje(scanMessageEl, "Formato de QR inválido. Escanea el código correcto.", true);
+                            if (scanMessageEl) mostrarMensaje(scanMessageEl, "Formato de QR inválido. Escanea el código correcto.", true);
                             if (onScanFailure) onScanFailure("Formato de QR inválido");
                         }
                     } else {
-                        mostrarMensaje(scanMessageEl, "Formato de QR inválido. Escanea el código correcto.", true);
+                        if (scanMessageEl) mostrarMensaje(scanMessageEl, "Formato de QR inválido. Escanea el código correcto.", true);
                         if (onScanFailure) onScanFailure("Formato de QR inválido");
                     }
                 },
-                (error) => { // Handler de fallo
-                    // La librería a veces reporta "no se pudo detectar" que es normal al inicio.
-                    // Solo actuamos si hay un error REALMENTE disruptivo.
+                (error) => {
                     if (onScanFailure) onScanFailure(error);
                 }
             );
@@ -144,89 +138,146 @@ export function initializeScanner(onScanSuccess, onScanFailure) {
 
         } catch (e) {
             console.error("[SCANNER_SERVICE] Fallo al inicializar Html5QrcodeScanner:", e);
-            mostrarMensaje(scanMessageEl, "No se pudo iniciar la cámara. Verifique permisos y estado.", true);
+            if (scanMessageEl) mostrarMensaje(scanMessageEl, "No se pudo iniciar la cámara. Verifique permisos y estado.", true);
             if (onScanFailure) onScanFailure(e);
         }
 
-    }, 100); // Un pequeño timeout para asegurar que el elemento del DOM está listo.
+    }, 100);
 }
 
-/**
-Detiene la instancia del escáner QR y limpia la interfaz.
-*/
 export function stopScanner() {
-    // VERIFICAMOS si html5QrCodeScanner existe Y si tiene la función stop
     if (html5QrCodeScanner && typeof html5QrCodeScanner.stop === 'function') {
         html5QrCodeScanner.stop().then(() => {
             console.log("[SCANNER_SERVICE] Escáner QR detenido.");
-            html5QrCodeScanner.clear(); // Limpia la interfaz del escáner
-            html5QrCodeScanner = null; // Libera la instancia
+            html5QrCodeScanner.clear();
+            html5QrCodeScanner = null;
         }).catch(error => {
             console.error("[SCANNER_SERVICE] Error al detener el escáner:", error);
-            html5QrCodeScanner = null; // Asegurarnos de que sea null en caso de error
+            html5QrCodeScanner = null;
         });
     } else {
-        // Si no existe o no tiene la función stop, simplemente nos aseguramos de que la variable sea null.
         if (html5QrCodeScanner !== null) {
             html5QrCodeScanner = null;
         }
     }
 }
 
+
 /**
 Muestra la información de un cliente escaneado en la UI del escáner.
+Al escanear, muestra los datos básicos del cliente, los botones de operación (sumar/restar)
+y prepara la UI ocultando los formularios de entrada de puntos hasta que se seleccione una acción.
 @param {object} clienteData - Datos del cliente (id, email, puntos).
 */
 export function mostrarInfoClienteEscaneado(clienteData) {
-    // --- Verificación de que las referencias DOM están listas y clienteData es válido ---
-    if (!clienteEncontradoInfoDiv || !clienteEscaneadoEmailEl || !clienteEscaneadoPuntosEl) {
-        console.error("[SCANNER_SERVICE] No se pudieron actualizar las referencias DOM para mostrar información del cliente. Las referencias no están disponibles.");
-        return; // No podemos actualizar la UI si las referencias no están disponibles.
+    // Verificación de que las referencias DOM necesarias para MOSTRAR la información y los formularios están listas.
+    if (!clienteEncontradoInfoDiv || !clienteEscaneadoEmailEl || !clienteEscaneadoPuntosEl || !sumarPuntosFormContainer || !descontarPuntosFormContainer) {
+        console.error("[SCANNER_SERVICE] ERROR CRÍTICO: Las referencias DOM para mostrar info del cliente o los formularios no son válidas. Las variables globales podrían estar mal asignadas.");
+        return; // Salimos si las referencias para mostrar info son inválidas.
     }
-    if (!clienteData) {
-        console.error("[SCANNER_SERVICE] No se recibieron datos del cliente para mostrar.");
-        return; // No hay datos para mostrar.
-    }
-    // Añadimos una verificación más específica para campos críticos.
-    if (!clienteData.id || !clienteData.email) {
+    
+    // Verificamos que los datos del cliente sean válidos.
+    if (!clienteData || !clienteData.id || !clienteData.email) {
         console.error("[SCANNER_SERVICE] Los datos del cliente recibidos no son válidos (falta ID o email).", clienteData);
         return;
     }
 
-    // Si todo está bien, procedemos a actualizar la UI
-    window.clienteEscaneadoParaSuma = clienteData; // Guardamos el cliente escaneado en el objeto global.
+    // --- Bloque para actualizar la UI del cliente encontrado ---
+    try {
+        window.clienteEscaneadoParaSuma = clienteData; // Guardamos el cliente escaneado en el objeto global.
 
-    clienteEncontradoInfoDiv.style.display = 'block';
-    clienteEscaneadoEmailEl.textContent = clienteData.email || 'No disponible';
-    clienteEscaneadoPuntosEl.textContent = clienteData.puntos || 0;
+        clienteEncontradoInfoDiv.style.display = 'block'; // Hacemos visible el contenedor de información del cliente.
 
-    // Limpiamos el input de puntos y preparamos para la siguiente suma.
-    if (puntosASumarDesdeQRInput) puntosASumarDesdeQRInput.value = '';
-    
-    // Limpiar mensajes anteriores y temporizadores.
-    if (scanMessageEl) {
-        mostrarMensaje(scanMessageEl, "", false);
-    }
-    if (autoHideMessageTimer) {
-        clearTimeout(autoHideMessageTimer);
-        autoHideMessageTimer = null;
+        clienteEscaneadoEmailEl.textContent = clienteData.email || 'No disponible';
+        clienteEscaneadoPuntosEl.textContent = clienteData.puntos || 0;
+
+        // --- LÓGICA PARA MANEJAR LA VISIBILIDAD DE LOS FORMULARIOS ---
+        // Al mostrar la información del cliente, OCULTAMOS ambos formularios de entrada de puntos,
+        // ya que la selección de la acción (sumar/restar) la harán los botones que están justo encima.
+        
+        if (sumarPuntosFormContainer) {
+            sumarPuntosFormContainer.style.display = 'none'; // Ocultamos el formulario de sumar por defecto.
+        }
+        if (descontarPuntosFormContainer) {
+            descontarPuntosFormContainer.style.display = 'none'; // Ocultamos el formulario de descontar por defecto.
+        }
+        
+        // Limpiar los mensajes y campos de los formularios para asegurar una interfaz limpia.
+        if (puntosASumarDesdeQRInput) puntosASumarDesdeQRInput.value = '';
+        if (puntosADescontarDesdeQRInput) puntosADescontarDesdeQRInput.value = '';
+        if (escanearSumarPuntosMessage) mostrarMensaje(escanearSumarPuntosMessage, "");
+        if (escanearDescontarPuntosMessage) mostrarMensaje(escanearDescontarPuntosMessage, "");
+
+        // Asegurarse de que el temporizador de mensajes se limpie
+        if (autoHideMessageTimer) {
+            clearTimeout(autoHideMessageTimer);
+            autoHideMessageTimer = null;
+        }
+        // Limpiar el mensaje general de escaneo
+        if (scanMessageEl) mostrarMensaje(scanMessageEl, "");
+
+    } catch (error) {
+        console.error("[SCANNER_SERVICE] Error al actualizar la UI con la información del cliente:", error);
+        if (scanMessageEl) mostrarMensaje(scanMessageEl, "Error al mostrar información del cliente.", true);
     }
 }
 
-/**
-Oculta la información del cliente escaneado y limpia la UI relacionada.
-*/
+
 export function ocultarInfoClienteEscaneado() {
     window.clienteEscaneadoParaSuma = null; // Limpiamos el cliente global.
+    
     if (clienteEncontradoInfoDiv) clienteEncontradoInfoDiv.style.display = 'none';
-    if (puntosASumarDesdeQRInput) puntosASumarDesdeQRInput.value = ''; // Limpiar el input de puntos.
+    
+    // Ocultamos AMBOS formularios y sus contenedores
+    if (sumarPuntosFormContainer) { // Ocultamos el contenedor de sumar
+        sumarPuntosFormContainer.style.display = 'none';
+    }
+    if (descontarPuntosFormContainer) { // Ocultamos el contenedor de descuento
+        descontarPuntosFormContainer.style.display = 'none';
+    }
 
-    // Limpiar el mensaje y el temporizador si están activos.
+    // Limpiar los inputs de puntos
+    if (puntosASumarDesdeQRInput) puntosASumarDesdeQRInput.value = '';
+    if (puntosADescontarDesdeQRInput) puntosADescontarDesdeQRInput.value = '';
+
+    // Limpiar los mensajes y el temporizador
     if (scanMessageEl) {
-        mostrarMensaje(scanMessageEl, "", false); // Limpiar el mensaje
+        mostrarMensaje(scanMessageEl, "", false); // Limpiar el mensaje general
     }
     if (autoHideMessageTimer) {
         clearTimeout(autoHideMessageTimer);
         autoHideMessageTimer = null;
     }
+    // Limpiar mensajes específicos de los formularios
+    if (escanearSumarPuntosMessage) {
+        mostrarMensaje(escanearSumarPuntosMessage, "", false);
+    }
+    if (escanearDescontarPuntosMessage) {
+        mostrarMensaje(escanearDescontarPuntosMessage, "", false);
+    }
+}
+
+// --- Funciones para alternar entre sumar/descontar puntos ---
+/**
+ * Muestra el formulario para sumar puntos y oculta el de descontar.
+ */
+export function mostrarFormularioSumar() {
+    if (sumarPuntosFormContainer) sumarPuntosFormContainer.style.display = 'block';
+    if (descontarPuntosFormContainer) descontarPuntosFormContainer.style.display = 'none';
+    
+    // Limpiar el campo de entrada y el mensaje del formulario de sumar
+    if (puntosASumarDesdeQRInput) puntosASumarDesdeQRInput.value = '';
+    if (escanearSumarPuntosMessage) mostrarMensaje(escanearSumarPuntosMessage, "");
+}
+
+/**
+ * Muestra el formulario para descontar puntos y oculta el de sumar.
+ */
+export function mostrarFormularioDescontar() {
+    if (sumarPuntosFormContainer) sumarPuntosFormContainer.style.display = 'none';
+    if (descontarPuntosFormContainer) descontarPuntosFormContainer.style.display = 'block';
+
+    // Limpiar el campo de entrada y el mensaje del formulario de descontar
+    if (puntosADescontarDesdeQRInput) puntosADescontarDesdeQRInput.value = '';
+    if (escanearDescontarPuntosMessage) mostrarMensaje(escanearDescontarPuntosMessage, "");
 }

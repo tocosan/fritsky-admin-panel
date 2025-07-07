@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -14,7 +15,7 @@
         <h1>Panel de Administración - Fritsky Patateria</h1>
     </header>
     <main>
-        <!-- Sección de Login para Empleados (Lo primero que necesitamos) -->
+        <!-- Sección de Login para Empleados -->
         <section id="adminLoginSection" class="admin-card">
             <h2>Acceso de Personal</h2>
             <form id="adminLoginForm">
@@ -26,7 +27,7 @@
                     <label for="adminPassword">Contraseña:</label>
                     <input type="password" id="adminPassword" required>
                 </div>
-                <button type="submit" class="button-primary">Ingresar</button>
+                <button type="submit" class="button-primary btn-ingreso">Ingresar</button>
                 <p id="adminLoginError" class="error-message"></p>
             </form>
         </section>
@@ -39,7 +40,6 @@
                 <div class="form-group">
                     <label for="clienteEmail">Correo Electrónico del Cliente:</label>
                     <input type="email" id="clienteEmail" required>
-                    <!-- O podrías tener un botón para escanear QR aquí -->
                 </div>
                 <div class="form-group">
                     <label for="puntosASumar">Puntos a Sumar:</label>
@@ -52,43 +52,65 @@
                 <button id="adminLogoutButton" class="button-secondary">Cerrar Sesión Admin</button>
                 <button id="btnMostrarEscanearQR" class="button-secondary">Escanear QR Cliente</button>
                 <button id="btnMostrarClientes" class="button-secondary">Ver Clientes</button>
+                <button id="btnMostrarMensajes" class="button-secondary">Enviar Mensaje</button>
             </div>
         </section>
 
         <!-- Sección para Escanear QR (se mostrará después del login) -->
-        <section id="escanearQrSection" class="admin-card" >
+        <section id="escanearQrSection" class="admin-card" style="display:none;">
             <h2>Escanear QR del Cliente</h2>
             <div id="scannerContainer">
-                <!-- Aquí se renderizará el video de la cámara -->
-               <div id="qrScannerElement"></div>
+               <div id="qrScannerElement"></div> <!-- El elemento donde se renderizará el escáner -->
             </div>
             <p id="scanMessage" class="message"></p>
 
-            <div id="clienteEncontradoInfo" >
+            <!-- Contenedor principal para la información del cliente encontrado -->
+            <div id="clienteEncontradoInfo" style="display: none;">
                 <p>Cliente encontrado: <strong id="clienteEscaneadoEmail"></strong></p>
                 <p>Puntos actuales: <span id="clienteEscaneadoPuntos"></span></p>
                 
-                <form id="escanearSumarPuntosForm">
-                    <div class="form-group">
-                        <label for="puntosASumarDesdeQR">Puntos a Sumar:</label>
-                        <input type="number" id="puntosASumarDesdeQR" min="1" required>
-                    </div>
-                    <button type="submit" class="button-primary">Sumar Puntos</button>
-                    <p id="escanearSumarPuntosMessage" class="message"></p>
-                </form>
+                <!-- Botones para elegir operación -->
+                <div class="buttons-container" style="margin-top: 20px;">
+                    <button id="btnMostrarSumarFormQR" class="button-secondary sum">Sumar Puntos</button>
+                    <button id="btnMostrarDescontarFormQR" class="button-secondary rest">Restar Puntos</button>
+                </div>
+
+                <hr>
+
+                <!-- Contenedor para el formulario de sumar puntos -->
+                <div id="sumarPuntosFormContainer" class="form-container" style="margin-top: 15px; display: block;">
+                       <form id="escanearSumarPuntosForm">
+                        <div class="form-group">
+                            <label for="puntosASumarDesdeQR">Puntos a Sumar:</label>
+                            <input type="number" id="puntosASumarDesdeQR" min="1" required>
+                        </div>
+                        <button type="submit" class="button-primary btnSum-confirm">Sumar Puntos</button>
+                        <p id="escanearSumarPuntosMessage" class="message"></p>
+                    </form>
+                </div>
+
+                <!-- Contenedor para el formulario de descontar puntos -->
+                <div id="descontarPuntosFormContainer" class="form-container" style="margin-top: 15px; display: none;">
+                        <form id="escanearDescontarPuntosForm">
+                         <div class="form-group">
+                             <label for="puntosADescontarDesdeQR">Puntos a Descontar:</label>
+                             <input type="number" id="puntosADescontarDesdeQR" min="1" required>
+                         </div>
+                         <button type="submit" class="button-primary btnRest-confirm">Restar Puntos</button>
+                         <p id="escanearDescontarPuntosMessage" class="message"></p>
+                     </form>
+                 </div>
             </div>
 
             <button id="btnVolverAInicio" class="button-secondary">Volver al Inicio</button>
            
         </section>
         <!-- Nueva Sección para Listado y Detalle de Clientes -->
-        <section id="clientesSection" class="admin-card">
+        <section id="clientesSection" class="admin-card" style="display:none;">
             <h2>Gestión de Clientes</h2>
             
-            <!-- Botón para volver a la sección principal -->
             <button id="btnVolverDesdeClientes" class="button-secondary">Volver al Inicio</button>
 
-            <!-- Contenedor para el listado de clientes -->
             <div id="clientesListContainer" class="list-container">
                 <h3>Listado de Clientes</h3>
                 <table id="clientesTable">
@@ -97,11 +119,9 @@
                             <th>Email</th>
                             <th>Puntos</th>
                             <th>Fecha de Registro</th>
-                            <!-- Añade más columnas si es necesario -->
                         </tr>
                     </thead>
                     <tbody id="clientesTableBody">
-                        <!-- Aquí se cargarán las filas de clientes -->
                         <tr>
                             <td colspan="3">Cargando clientes...</td>
                         </tr>
@@ -110,26 +130,63 @@
                 <p id="clientesMessage" class="message"></p>
             </div>
 
-            <!-- Área para el detalle de un cliente (inicialmente oculta) -->
-            <div id="clienteDetailContainer" class="clienteDetail">
+            <div id="clienteDetailContainer" class="clienteDetail" style="display:none;">
                 <h3>Detalle del Cliente</h3>
                 <p><strong>Email:</strong> <span id="clienteDetailEmail"></span></p>
                 <p><strong>Puntos:</strong> <span id="clienteDetailPuntos"></span></p>
                 <p><strong>Fecha de Registro:</strong> <span id="clienteDetailFechaRegistro"></span></p>
                 
-                <hr> <!-- Separador visual -->
+                <hr>
                 
-                <h4>Sumar Puntos Manualmente</h4>
-                <form id="detalleSumarPuntosForm"> <!-- <-- ESTE ES EL FORMULARIO NUEVO -->
+                <form id="detalleSumarPuntosForm">
                     <div class="form-group">
                         <label for="puntosASumarEnDetalle">Puntos a Sumar:</label>
                         <input type="number" id="puntosASumarEnDetalle" min="1" required>
                     </div>
                     <button type="submit" class="button-primary">Sumar Puntos</button>
-                    <p id="detalleSumarPuntosMessage" class="message"></p> <!-- Para mensajes de éxito/error de esta suma -->
+                    <p id="detalleSumarPuntosMessage" class="message"></p>
                 </form>
-                <button id="btnCerrarClienteDetail" class="detalle">Cerrar Detalle</button>
+
+                <form id="detalleRestarPuntosForm">
+                    <div class="form-group">
+                        <label for="puntosARestarEnDetalle">Puntos a Restar:</label>
+                        <input type="number" id="puntosARestarEnDetalle" min="1" required>
+                    </div>
+                    <button type="submit" class="button-primary button-restar">Restar Puntos</button>
+                    <p id="detalleRestarPuntosMessage" class="message"></p>
+                </form>
+
+                <button id="btnCerrarClienteDetail" class="btn-detalle">Cerrar Detalle</button>
             </div> 
+        </section>
+
+        <!-- NUEVA SECCIÓN: Para Crear y Enviar Mensajes a Clientes -->
+        <section id="mensajesSection" class="admin-card" style="display:none;">
+            <h2>Enviar Mensaje a Clientes</h2>
+            
+            <!-- Botón para volver a la sección principal -->
+            <button id="btnVolverDesdeMensajes" class="button-secondary">Volver al Inicio</button>
+
+            <div class="message-creation-container">
+                <h3>Crear Nuevo Mensaje</h3>
+                <form id="crearMensajeForm">
+                    <div class="form-group">
+                        <label for="mensajeDestinatarios">Enviar a:</label>
+                        <select id="mensajeDestinatarios" required>
+                            <option value="todos">Todos los Clientes</option>
+                            <!-- Aquí podrías añadir opciones para segmentación en el futuro -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mensajeContenido">Contenido del Mensaje:</label>
+                        <textarea id="mensajeContenido" rows="5" required placeholder="Escribe aquí el mensaje para tus clientes..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="button-primary">Enviar Mensaje</button>
+                    <p id="mensajeEnvioStatus" class="message"></p>
+                </form>
+            </div>
         </section>
 
     </main>
@@ -137,7 +194,7 @@
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js') // O './sw.js'
+            navigator.serviceWorker.register('/sw.js')
                 .then(reg => console.log('[Admin App] Service worker registrado.', reg))
                 .catch(err => console.error('[Admin App] Error registro SW:', err));
         });
